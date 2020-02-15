@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>LTK</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+  <script type="text/javascript" charset="utf-8">
+    function hasClassName(inElement, inClassName) {
+      var regExp = new RegExp('(?:^|\\s+)' + inClassName + '(?:\\s+|$)');
+      return regExp.test(inElement.className);
+    }
+
+    function addClassName(inElement, inClassName) {
+      if (!hasClassName(inElement, inClassName))
+        inElement.className = [inElement.className, inClassName].join(' ');
+    }
+
+    function removeClassName(inElement, inClassName) {
+      if (hasClassName(inElement, inClassName)) {
+        var regExp = new RegExp('(?:^|\\s+)' + inClassName + '(?:\\s+|$)', 'g');
+        var curClasses = inElement.className;
+        inElement.className = curClasses.replace(regExp, ' ');
+      }
+    }
+
+    function toggleClassName(inElement, inClassName) {
+      if (hasClassName(inElement, inClassName))
+        removeClassName(inElement, inClassName);
+      else
+        addClassName(inElement, inClassName);
+    }
+
+    function toggleShape() {
+      var shape = document.getElementById('shape');
+      if (hasClassName(shape, 'ring')) {
+        removeClassName(shape, 'ring');
+        addClassName(shape, 'cube');
+      } else {
+        removeClassName(shape, 'cube');
+        addClassName(shape, 'ring');
+      }
+
+      var stage = document.getElementById('stage');
+      if (hasClassName(shape, 'ring'))
+        stage.style.webkitTransform = 'translateZ(-200px)';
+      else
+        stage.style.webkitTransform = '';
+    }
+  </script>
+</head>
+
+<body data-rsssl=1>
+  <canvas style="position: fixed;" id="canvas"></canvas>
+  <div class="controls">
+    <div style="text-align: center;"><button class="bttn-gradient bttn-sm bttn-royal" onclick="toggleShape()">Linh xấu
+        tính</button></div>
+  </div>
+
+  <div id="container">
+    <div id="stage">
+
+      <div id="shape" class="cube backfaces">
+        <div class="plane one"></div>
+        <div class="plane two"></div>
+        <div class="plane three"></div>
+        <div class="plane four"></div>
+        <div class="plane five"></div>
+        <div class="plane six"></div>
+        <div class="plane seven"></div>
+        <div class="plane eight"></div>
+        <div class="plane nine"></div>
+        <div class="plane ten"></div>
+        <div class="plane eleven"></div>
+        <div class="plane twelve"></div>
+      </div>
+
+    </div>
+  </div>
+  <audio style="visibility: hidden;" controls autoplay loop>
+    <source src="./public/sounds/sound.mp3" type="audio/mpeg">
+  </audio>
+  <!-- <div style="visibility: hidden"><embed src="./public/sounds/sound.mp3"></div> -->
+  <!-- <embed WMODE="transparent" src="./public/sounds/sound.mp3"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var canvas = $('#canvas')[0];
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        var w = canvas.width;
+        var h = canvas.height;
+        ctx.strokeStyle = 'rgba(174,194,224,0.5)';
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round';
+
+        var init = [];
+        var maxParts = 1000;
+        for (var a = 0; a < maxParts; a++) {
+          init.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            l: Math.random() * 1,
+            xs: -4 + Math.random() * 4 + 2,
+            ys: Math.random() * 10 + 10
+          })
+        }
+
+        var particles = [];
+        for (var b = 0; b < maxParts; b++) {
+          particles[b] = init[b];
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, w, h);
+          for (var c = 0; c < particles.length; c++) {
+            var p = particles[c];
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + p.l * p.xs, p.y + p.l * p.ys);
+            ctx.stroke();
+          }
+          move();
+        }
+
+        function move() {
+          for (var b = 0; b < particles.length; b++) {
+            var p = particles[b];
+            p.x += p.xs;
+            p.y += p.ys;
+            if (p.x > w || p.y > h) {
+              p.x = Math.random() * w;
+              p.y = -20;
+            }
+          }
+        }
+
+        setInterval(draw, 30);
+
+      }
+    });
+  </script>
+</body>
+
+</html>
